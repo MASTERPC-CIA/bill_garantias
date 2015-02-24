@@ -44,7 +44,7 @@ class Productoattr extends MX_Controller {
         $crud->callback_column('doc_id',array($this,'open_fact'));
 
         $crud->set_table('bill_productoattr');
-        $crud->set_relation('producto_id', 'billing_producto', '{nombreUnico}');
+        $crud->set_relation('producto_id', 'billing_producto', '{codigo} - {nombreUnico}');
         $crud->set_relation('prodattr_id', 'bill_prodattr', '{attr}');
         $crud->set_relation('tipotransaccion_cod', 'billing_tipotransaccion', '{nombre}');
         $crud->unset_add()->unset_delete()->unset_edit()->unset_read();
