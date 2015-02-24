@@ -10,7 +10,7 @@ class Index extends MX_Controller {
     public function index(){
         $res['view'] = $this->load_view();
         $res['slidebar'] = $this->load->view('slidebar','',TRUE);
-        $this->load->view('templates/dashboard',$res);
+        $this->load->view('common/templates/dashboard',$res);
     }
         
     private function load_view() {

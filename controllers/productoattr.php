@@ -5,6 +5,7 @@ class Productoattr extends MX_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->library('grocery_CRUD');                
 	}
                 
     public function get_crud()
@@ -40,9 +41,7 @@ class Productoattr extends MX_Controller {
                  ->display_as('tipotransaccion_cod','Transaccion')
                  ->display_as('usuario_name','Usuario');
 
-//        $crud->where('saldo_ultimo >', 0);
         $crud->callback_column('doc_id',array($this,'open_fact'));
-//        $crud->callback_column('retencion',array($this,'open_retencion'));
 
         $crud->set_table('bill_productoattr');
         $crud->set_relation('producto_id', 'billing_producto', '{nombreUnico}');
@@ -51,7 +50,7 @@ class Productoattr extends MX_Controller {
         $crud->unset_add()->unset_delete()->unset_edit()->unset_read();
         $crud->set_subject('Atributos de Producto');
         $output = $crud->render();
-        $this->load->view('crud_view_datatable', $output);
+        $this->load->view('common/crud/crud_view_datatable', $output);
     }
                 
     public function open_fact($value, $row){
@@ -59,7 +58,7 @@ class Productoattr extends MX_Controller {
         if($row->tipotransaccion_cod == '01'){ /*es venta*/
             $fields = 'puntoventaempleado_establecimiento,puntoventaempleado_puntoemision,secuenciafactventa';
             $fact = $this->generic_model->get_by_id('billing_facturaventa', $row->doc_id, $fields, 'codigofactventa');
-            $nro_fact = tagcontent('a', $fact->puntoventaempleado_establecimiento.$fact->puntoventaempleado_puntoemision.'-'.$fact->secuenciafactventa, array('id'=>'ajaxpanelbtn','data-url'=>base_url().'ventas/ventas/venta_print/'.$row->doc_id,'data-target'=>'container-fluid','href'=>'#'));
+            $nro_fact = tagcontent('a', $fact->puntoventaempleado_establecimiento.$fact->puntoventaempleado_puntoemision.'-'.$fact->secuenciafactventa, array('id'=>'ajaxpanelbtn','data-url'=>base_url().'ventas/ventas/open_fact/'.$row->doc_id,'data-target'=>'container-fluid','href'=>'#'));
             return $nro_fact;            
         }elseif($row->tipotransaccion_cod == '02'){ /*es compra*/
 //            $fields = 'puntoventaempleado_establecimiento,puntoventaempleado_puntoemision,secuenciafactventa';
@@ -67,7 +66,7 @@ class Productoattr extends MX_Controller {
             $fact = $this->generic_model->get_by_id('billing_facturacompra', $row->doc_id, 'codigoFacturaCompra,pa_sriautorizaciondocs_establecimiento,pa_sriautorizaciondocs_puntoemision,noFacturaCompra,proveedor_id', 'codigoFacturaCompra');
 //            print_r($fact);
             
-            $nro_fact = tagcontent('a', $fact->pa_sriautorizaciondocs_establecimiento.$fact->pa_sriautorizaciondocs_puntoemision.'-'.$fact->noFacturaCompra, array('id'=>'ajaxpanelbtn','data-url'=>base_url('compras/compradet/index/'.$row->doc_id),'data-target'=>'container-fluid','href'=>'#'));
+            $nro_fact = tagcontent('a', $fact->pa_sriautorizaciondocs_establecimiento.$fact->pa_sriautorizaciondocs_puntoemision.'-'.$fact->noFacturaCompra, array('id'=>'ajaxpanelbtn','data-url'=>base_url('compras/compras/open_compra/'.$row->doc_id),'data-target'=>'container-fluid','href'=>'#'));
             return $nro_fact;            
         }
 
